@@ -54,3 +54,25 @@ Each entry: the symptom as first seen, the real cause, and where the fix lives.
 - **Cause:** the engine does not create the preview folder, and the browser then fails quietly.
 - **Fix lives in:** `server.py` creates the folder before building. Test: `test_full_export_with_preview_lists_every_file`.
 - **Status:** Fixed.
+
+## Trap 7: a double quote in a name made the Camunda file invalid
+
+- **Symptom:** a task named `Check "balance"` produced a `.bpmn` that did not parse. Text like `x" onload="y` added real
+  attributes to the file. The SVG was fine, so the picture looked right.
+- **Cause:** `xml.sax.saxutils.escape` does not escape the double quote, and names are written inside double-quoted
+  attributes. Found in the pre-publication security review.
+- **Fix lives in:** `attr()` in `bpmn_kit.py`, used for every attribute value in `to_bpmn`. Tests:
+  `tests/test_xml_escaping.py`, which also round-trips names through a real XML parser.
+- **Status:** Fixed.
+
+## Trap 8: the server was fetched from whatever was newest in the repository
+
+- **Symptom:** none yet. Found in the pre-publication security review. The Codex and Antigravity configs ran
+  `uvx --from git+<repository>`, so anyone able to change the repository, including a stolen account, could change
+  what runs on every user's computer at its next start.
+- **Cause:** an address with no version in it.
+- **Fix lives in:** `server_source()` in `scripts/sync_plugins.py` pins it to the tag `v<version>` of
+  `pyproject.toml`. Tests: `test_server_source_is_pinned_to_the_version_tag` and
+  `test_all_hosts_start_the_same_server` in `tests/test_packaging.py`.
+- **Status:** Fixed in this repository. Needs the tag to exist on GitHub and tags to be protected there (see Release
+  in `AGENTS.md`).

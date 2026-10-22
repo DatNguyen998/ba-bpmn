@@ -29,6 +29,12 @@ ROW_GAP = 112           # distance from the main row to the lower row (row=1)
 LANE_PAD = 20           # minimum empty space above and below a lane's contents
 
 
+def attr(s):
+    """Escape text for a double-quoted XML attribute. escape() alone leaves the quote itself alone, so a name
+    like  Check "balance"  broke the file and  x" onload="y  added an attribute."""
+    return escape(s, {'"': "&quot;"})
+
+
 def text_w(s, size=12, bold=False):
     return len(s) * size * (0.55 if bold else 0.535)
 
@@ -1249,9 +1255,9 @@ class Diagram:
           'modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">')
         A('  <bpmn:collaboration id="Collaboration_1">')
         for p in self.pools:
-            A(f'    <bpmn:participant id="{p.id}" name="{escape(p.title)}" processRef="{p.id}_Process" />')
+            A(f'    <bpmn:participant id="{p.id}" name="{attr(p.title)}" processRef="{p.id}_Process" />')
         for m in self.msgs:
-            nm = f' name="{escape(m.label)}"' if m.label else ""
+            nm = f' name="{attr(m.label)}"' if m.label else ""
             A(f'    <bpmn:messageFlow id="{m.id}"{nm} sourceRef="{m.src}" targetRef="{m.tgt}" />')
         A('  </bpmn:collaboration>')
         for p in self.pools:
@@ -1261,11 +1267,11 @@ class Diagram:
             for f in pf:
                 outs.setdefault(f.src, []).append(f.id)
                 ins.setdefault(f.tgt, []).append(f.id)
-            A(f'  <bpmn:process id="{p.id}_Process" name="{escape(p.title)}" isExecutable="false">')
+            A(f'  <bpmn:process id="{p.id}_Process" name="{attr(p.title)}" isExecutable="false">')
             if len(p.lanes) > 1:
                 A(f'    <bpmn:laneSet id="{p.id}_LaneSet">')
                 for i, l in enumerate(p.lanes):
-                    A(f'      <bpmn:lane id="{p.id}_Lane{i}" name="{escape(l.name)}">')
+                    A(f'      <bpmn:lane id="{p.id}_Lane{i}" name="{attr(l.name)}">')
                     for n in pn:
                         if n.lane == i:
                             A(f'        <bpmn:flowNodeRef>{n.id}</bpmn:flowNodeRef>')
@@ -1275,7 +1281,7 @@ class Diagram:
                 tag = {"start": "startEvent", "end": "endEvent", "catch": "intermediateCatchEvent",
                        "throw": "intermediateThrowEvent", "boundary": "boundaryEvent",
                        "gateway": GATEWAY_TAGS[getattr(n, "gtype", "exclusive")]}.get(n.kind) or TASK_TAGS.get(n.ttype, "task")
-                attrs = f'id="{n.id}" name="{escape(n.name.replace(chr(10), " "))}"'
+                attrs = f'id="{n.id}" name="{attr(n.name.replace(chr(10), " "))}"'
                 if n.kind == "boundary":
                     attrs += f' attachedToRef="{n.attached}" cancelActivity="true"'
                 A(f'    <bpmn:{tag} {attrs}>')
@@ -1288,14 +1294,14 @@ class Diagram:
                 elif n.event == "error":
                     A(f'      <bpmn:errorEventDefinition id="{n.id}_Def" />')
                 elif n.event == "link":
-                    A(f'      <bpmn:linkEventDefinition id="{n.id}_Def" name="{escape(n.name)}" />')
+                    A(f'      <bpmn:linkEventDefinition id="{n.id}_Def" name="{attr(n.name)}" />')
                 elif n.event == "timer":
                     body = (f'<bpmn:timeDuration xsi:type="bpmn:tFormalExpression">{escape(n.duration)}</bpmn:timeDuration>'
                             if n.duration else "")
                     A(f'      <bpmn:timerEventDefinition id="{n.id}_Def">{body}</bpmn:timerEventDefinition>')
                 A(f'    </bpmn:{tag}>')
             for f in pf:
-                nm = f' name="{escape(f.label)}"' if f.label else ""
+                nm = f' name="{attr(f.label)}"' if f.label else ""
                 A(f'    <bpmn:sequenceFlow id="{f.id}"{nm} sourceRef="{f.src}" targetRef="{f.tgt}" />')
             if p.notes:
                 A(f'    <bpmn:textAnnotation id="{p.id}_Note"><bpmn:text>{escape(" ".join(p.notes))}</bpmn:text></bpmn:textAnnotation>')

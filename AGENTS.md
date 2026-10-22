@@ -39,10 +39,18 @@ python scripts/sync_plugins.py --release  # before publishing: fails while a "TB
 | You change | Also |
 |---|---|
 | `skills/**` or `packaging.json` | Run the sync script and commit the generated files |
-| Version in `pyproject.toml` | Same version in `.claude-plugin/plugin.json` and the Codex `plugin.json` (a test checks) |
+| Version in `pyproject.toml` | Same version in `.claude-plugin/plugin.json` and the Codex `plugin.json` (a test checks), run the sync script (it re-pins the server to `v<version>`), then follow Release |
 | A BPMN element in the engine | The whitelist in `spec.py`, `spec_format.md`, "What is not supported" in `skills/bpmn-for-ba/SKILL.md`, the README list, and tests |
 | Something that cost real time to debug | Add a numbered entry to `docs/TRAPS.md` |
 | A claim that a host install works | Only after it ran in that host. Update the README evidence table |
+
+## Release
+
+1. Bump the version in `pyproject.toml` and both manifests. Run the sync script, the tests, and `--release`.
+2. Commit, then tag that commit and push both: `git tag -a v0.1.0 -m "v0.1.0"`, `git push origin main v0.1.0`.
+3. The tag must exist on GitHub before anyone installs. Codex and Antigravity fetch the server at `…@v<version>`,
+   and a test fails if that tag in their configs differs from the project version.
+4. Never move or delete a published tag. Ship a new version instead, and keep tags protected on GitHub.
 
 ## Never
 

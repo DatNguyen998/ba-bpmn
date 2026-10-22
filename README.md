@@ -17,7 +17,7 @@ Works in Claude, Codex and Antigravity. One engine, one set of skills, three thi
 | `plugins/codex/ba-bpmn/` | Codex plugin. The folder name must equal the plugin name |
 | `.agents/plugins/marketplace.json` | Codex marketplace file |
 | `plugins/antigravity/` | Antigravity plugin |
-| `packaging.json` | Where Codex and Antigravity fetch the server from. One setting, written into both hosts |
+| `packaging.json` | The repository address. The sync script pins the server to the release tag of the current version (`@v0.1.0`) and writes it into both hosts |
 | `scripts/sync_plugins.py` | Copies `skills/` into the Codex and Antigravity folders and writes their server configs |
 | `AGENTS.md`, `CLAUDE.md` | Instructions for anyone (or any AI tool) changing this repository. `CLAUDE.md` only imports `AGENTS.md` |
 | `docs/TRAPS.md` | Numbered list of problems that cost real time, and why the code looks the way it does |
@@ -86,6 +86,9 @@ python scripts/sync_plugins.py --check  # fails if the host folders drifted
 
 ## Open items before release
 
+- Publishing needs the release tag too: Codex and Antigravity fetch the server at `…@v0.1.0`, so push the tag
+  `v0.1.0` with the first release (see Release in `AGENTS.md`), then turn on two-factor sign-in and tag protection
+  on GitHub.
 - The install commands only work once the repository exists at the address in `packaging.json`. Run
   `python scripts/sync_plugins.py --release` before each release: it fails while a "TBC" placeholder is left.
 - The bundled bpmn-js viewer is allowed under the bpmn.io licence if its notice stays and its watermark is not hidden

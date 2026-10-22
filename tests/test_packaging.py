@@ -84,13 +84,33 @@ def test_antigravity_mcp_config_declares_the_server():
     assert server["command"] == "uvx"
 
 
+def project_version():
+    return tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+
+
+def server_args(host):
+    if host == "codex":
+        return load(CODEX / ".mcp.json")["bpmn"]["args"]
+    return load(ANTI / "mcp_config.json")["mcpServers"]["bpmn"]["args"]
+
+
 def test_all_hosts_start_the_same_server():
     cfg = load(ROOT / "packaging.json")
-    codex = load(CODEX / ".mcp.json")["bpmn"]["args"]
-    anti = load(ANTI / "mcp_config.json")["mcpServers"]["bpmn"]["args"]
-    assert codex == anti == ["--from", cfg["server_source"], cfg["server_command"]]
+    expected = ["--from", f"git+{cfg['repository']}@v{project_version()}", cfg["server_command"]]
+    assert server_args("codex") == server_args("antigravity") == expected
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
     assert cfg["server_command"] in project["scripts"]
+
+
+def test_server_source_is_pinned_to_the_version_tag():
+    """An unpinned address would run whatever is newest in the repository on every user's computer."""
+    cfg = load(ROOT / "packaging.json")
+    assert cfg["repository"].startswith("https://github.com/") and cfg["repository"].endswith(".git")
+    assert "server_source" not in cfg, "the source is built from 'repository' and the project version"
+    for host in ("codex", "antigravity"):
+        source = server_args(host)[1]
+        assert re.search(r"@v\d+\.\d+\.\d+$", source), f"{host}: {source} is not pinned to a version tag"
+        assert source.endswith("@v" + project_version()), f"{host}: tag does not match the project version"
 
 
 def test_versions_agree_everywhere():

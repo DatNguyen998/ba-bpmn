@@ -3,7 +3,7 @@
     "command": "uvx",
     "args": [
       "--from",
-      "git+https://github.com/huytquocxx/ba-bpmn.git",
+      "git+https://github.com/huytquocxx/ba-bpmn.git@v0.1.0",
       "bpmn-mcp"
     ],
     "default_tools_approval_mode": "writes"

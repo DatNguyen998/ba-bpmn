@@ -8,6 +8,7 @@ Source of truth: `skills/` (copied byte for byte into each host) and `packaging.
 fetched from). The host manifests (plugin.json, marketplace.json) are written by hand.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -23,10 +24,21 @@ def _json(data):
     return (json.dumps(data, indent=2) + "\n").encode("utf-8")
 
 
+def project_version():
+    match = re.search(r'^version\s*=\s*"([^"]+)"', (ROOT / "pyproject.toml").read_text(encoding="utf-8"), re.M)
+    return match.group(1)
+
+
+def server_source(cfg):
+    """The address the server is fetched from, pinned to the release tag of the current version. An unpinned
+    address would run whatever is newest in the repository on every user's computer."""
+    return f"git+{cfg['repository']}@v{project_version()}"
+
+
 def expected_files():
     """Every generated or copied file: {path: bytes}."""
     cfg = json.loads((ROOT / "packaging.json").read_text(encoding="utf-8"))
-    args = ["--from", cfg["server_source"], cfg["server_command"]]
+    args = ["--from", server_source(cfg), cfg["server_command"]]
     files = {
         # Codex: a direct one-server map (no "mcpServers" wrapper); only writes ask for approval
         CODEX / ".mcp.json": _json({"bpmn": {"command": "uvx", "args": args, "default_tools_approval_mode": "writes"}}),
