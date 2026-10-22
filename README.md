@@ -49,6 +49,7 @@ Three things make it safe to rely on:
 | `plugins/antigravity/` | Antigravity plugin |
 | `packaging.json` | The repository address. The sync script pins the server to the release tag of the current version (`@v0.1.0`) and writes it into both hosts |
 | `scripts/sync_plugins.py` | Copies `skills/` into the Codex and Antigravity folders and writes their server configs |
+| `.github/workflows/check.yml` | Runs the same checks and the tests on GitHub, on Linux and Windows, for every push and pull request |
 | `scripts/prepublish.py`, `.githooks/` | The checks to run before publishing (links, text rules, tests, leak scans, a preview of the README as GitHub draws it) and a Git hook that runs them before every push |
 | `AGENTS.md`, `CLAUDE.md` | Instructions for anyone (or any AI tool) changing this repository. `CLAUDE.md` only imports `AGENTS.md` |
 | `docs/diagrams/` | The two diagrams above as Mermaid text (`.mmd`) and the pictures drawn from them with Pele (`.svg`) |
@@ -78,7 +79,8 @@ installs a self-contained copy of its folder and Antigravity documents no folder
 ## What it needs on the computer
 
 - `uv` (or Python 3.10+ with `pip install .`)
-- Chrome or Edge, only for the PNG and the Camunda import check. Set `BPMN_BROWSER` if it is not found.
+- Chrome or Edge, only for the PNG and the Camunda import check. Set `BPMN_BROWSER` if it is not found, and
+  `BPMN_BROWSER_ARGS` to give it extra flags (for example `--no-sandbox` on a locked-down Linux machine).
 
 ## What has been tested, and what has not
 
@@ -87,6 +89,7 @@ installs a self-contained copy of its folder and Antigravity documents no folder
 | The engine draws, checks and exports (SVG, PNG, `.bpmn`) | Tested: 80+ automated tests, and every picture looked at |
 | The `.bpmn` loads in Camunda's own viewer (bpmn-js) | Tested: "imported, 0 warnings" |
 | The server starts through its `bpmn-mcp` command and works when an AI tool launches it | Tested on Windows with a Python client |
+| It runs on Linux and on Python 3.10 | Not tested yet. A GitHub workflow runs the checks there on every push; its first run is the first test |
 | The file opens in Camunda Modeler itself | Not tested |
 | Install and use in Claude | Not tested (manifests follow Anthropic's documentation) |
 | Install and use in Codex | Not tested (follows the draw.io plugin and the Codex checks of `sebahrens/bpmn-mcp`) |

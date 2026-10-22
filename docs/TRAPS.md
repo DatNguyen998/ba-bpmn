@@ -76,3 +76,15 @@ Each entry: the symptom as first seen, the real cause, and where the fix lives.
   `test_all_hosts_start_the_same_server` in `tests/test_packaging.py`.
 - **Status:** Fixed in this repository. Needs the tag to exist on GitHub and tags to be protected there (see Release
   in `AGENTS.md`).
+
+## Trap 9: the Linux-only browser flag in the workflow would never have been set
+
+- **Symptom:** the workflow linter (actionlint) rejected `runner.os` in the job-level `env` block. Left in, the Linux
+  job would have started Chrome without `--no-sandbox` and failed on GitHub, not on the author's Windows machine.
+- **Cause:** a job's own `env` block can read `github`, `matrix`, `inputs`, `secrets`, `strategy`, `vars` and `needs`,
+  but not `runner`.
+- **Fix lives in:** `.github/workflows/check.yml` uses `matrix.os == 'ubuntu-latest'`. Test:
+  `test_linux_browser_gets_the_flag_it_needs_only_on_linux` in `tests/test_ci.py`.
+- **Lesson:** lint a changed workflow with actionlint before pushing it. No Linux machine was available when this was
+  written, so the first GitHub run is the first real Linux test.
+- **Status:** Fixed.

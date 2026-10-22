@@ -35,6 +35,8 @@ python scripts/prepublish.py --install-hook   # once per clone: Git then runs th
 - **This repository's engine is the one that ships.** Do not assume it matches any other drawing skill: it has its own
   elements and taller SVG task boxes.
 - **Look at the picture.** Tests cannot see layout. After any engine change, build a diagram and open the PNG.
+- **CI runs the same checks.** `.github/workflows/check.yml` runs the gate and the tests on Linux and Windows for every
+  push and pull request. After a push, look at the Actions tab. A red run is a bug in the change.
 
 ## If you change this, also do that
 
@@ -44,6 +46,7 @@ python scripts/prepublish.py --install-hook   # once per clone: Git then runs th
 | Version in `pyproject.toml` | Same version in `.claude-plugin/plugin.json` and the Codex `plugin.json` (a test checks), run the sync script (it re-pins the server to `v<version>`), then follow Release |
 | A BPMN element in the engine | The whitelist in `spec.py`, `spec_format.md`, "What is not supported" in `skills/bpmn-for-ba/SKILL.md`, the README list, and tests |
 | A diagram in the README | Edit `docs/diagrams/*.mmd`, then `cd docs/diagrams && npm ci && npm run render` and look at the pictures. A test fails on a stale one |
+| A GitHub Action version in `.github/workflows/` | Look up the release's commit (`gh api repos/<owner>/<name>/git/ref/tags/<tag>`), put the full commit id and `# vX.Y.Z` in the file, and lint it with actionlint. A test requires every action to be pinned |
 | Something that cost real time to debug | Add a numbered entry to `docs/TRAPS.md` |
 | A claim that a host install works | Only after it ran in that host. Update the README evidence table |
 

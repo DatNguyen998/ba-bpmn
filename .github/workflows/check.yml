@@ -1,0 +1,48 @@
+name: Checks
+
+# Runs the same checks as `python scripts/prepublish.py`, on Linux and Windows, for the oldest and the newest
+# Python the project supports. It catches edits made on github.com and "works only on my laptop" problems.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Read access to this repository's files and nothing else. No secrets are used.
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: ${{ matrix.os }}, Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.13"]
+    env:
+      # Chrome on GitHub's Linux machines will not start its sandbox, so the PNG and Camunda import steps need this flag.
+      BPMN_BROWSER_ARGS: ${{ matrix.os == 'ubuntu-latest' && '--no-sandbox' || '' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install
+        run: python -m pip install -e ".[test]"
+
+      - name: Pre-publish checks (generated files, placeholders, links, text rules)
+        run: python scripts/prepublish.py --no-tests
+
+      - name: Tests (80 percent coverage or more on the project's own code)
+        run: python -m pytest -q --cov=bpmn_mcp.spec --cov=bpmn_mcp.server --cov-report=term --cov-fail-under=80

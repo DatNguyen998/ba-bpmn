@@ -26,6 +26,24 @@ def test_hung_browser_is_retried_once(monkeypatch):
     assert len(calls) == 2
 
 
+def test_extra_browser_flags_can_be_set_from_the_environment(monkeypatch):
+    """CI on Linux needs --no-sandbox; users on locked-down machines may need their own flags."""
+    seen = []
+
+    def run(cmd, **kw):
+        seen.append(cmd)
+        return Done()
+
+    monkeypatch.setattr(bpmn_kit.Diagram, "find_browser", staticmethod(lambda: "browser"))
+    monkeypatch.setattr(bpmn_kit.subprocess, "run", run)
+    monkeypatch.setenv("BPMN_BROWSER_ARGS", "--no-sandbox --disable-dev-shm-usage")
+    bpmn_kit.Diagram._run_browser(["--screenshot=x"])
+    assert "--no-sandbox" in seen[0] and "--disable-dev-shm-usage" in seen[0] and "--screenshot=x" in seen[0]
+    monkeypatch.delenv("BPMN_BROWSER_ARGS")
+    bpmn_kit.Diagram._run_browser(["--screenshot=x"])
+    assert "--no-sandbox" not in seen[1]
+
+
 def test_browser_that_always_hangs_gives_up(monkeypatch):
     def run(cmd, **kw):
         raise subprocess.TimeoutExpired(cmd, kw["timeout"])

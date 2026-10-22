@@ -4,7 +4,7 @@ The spec places every element on a grid (pool, lane, column, row). Routing, labe
 drawing, the BPMN XML and all checks are derived from that one description, so the picture
 and the Camunda file can never drift apart.
 """
-import json, math, os, re, shutil, subprocess, sys, tempfile
+import json, math, os, re, shlex, shutil, subprocess, sys, tempfile
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -1418,7 +1418,8 @@ class Diagram:
         for attempt in range(attempts):
             prof = tempfile.mkdtemp(prefix="bpmnkit-prof-")
             try:
-                r = subprocess.run([b, "--headless=new", "--disable-gpu", "--no-first-run", f"--user-data-dir={prof}"] + args,
+                r = subprocess.run([b, "--headless=new", "--disable-gpu", "--no-first-run", f"--user-data-dir={prof}"]
+                                   + shlex.split(os.environ.get("BPMN_BROWSER_ARGS", "")) + args,
                                    capture_output=True, text=True, timeout=timeout, encoding="utf-8", errors="replace")
                 return r.stdout
             except subprocess.TimeoutExpired:
