@@ -49,6 +49,7 @@ Three things make it safe to rely on:
 | `plugins/antigravity/` | Antigravity plugin |
 | `packaging.json` | The repository address. The sync script pins the server to the release tag of the current version (`@v0.1.0`) and writes it into both hosts |
 | `scripts/sync_plugins.py` | Copies `skills/` into the Codex and Antigravity folders and writes their server configs |
+| `scripts/prepublish.py`, `.githooks/` | The checks to run before publishing (links, text rules, tests, leak scans, a preview of the README as GitHub draws it) and a Git hook that runs them before every push |
 | `AGENTS.md`, `CLAUDE.md` | Instructions for anyone (or any AI tool) changing this repository. `CLAUDE.md` only imports `AGENTS.md` |
 | `docs/diagrams/` | The two diagrams above as Mermaid text (`.mmd`) and the pictures drawn from them with Pele (`.svg`) |
 | `docs/TRAPS.md` | Numbered list of problems that cost real time, and why the code looks the way it does |
@@ -112,6 +113,8 @@ pip install -e ".[test]"
 pytest --cov=bpmn_mcp.spec --cov=bpmn_mcp.server
 python scripts/sync_plugins.py          # after editing skills/ or packaging.json
 python scripts/sync_plugins.py --check  # fails if the host folders drifted
+python scripts/prepublish.py --preview  # every check before publishing, and a preview of the README
+python scripts/prepublish.py --install-hook  # once per clone: run the checks before every git push
 ```
 
 ## Known limits and open items

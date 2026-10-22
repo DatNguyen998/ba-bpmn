@@ -1,0 +1,11 @@
+#!/bin/sh
+# Runs the pre-publish checks before every push. Turn it on once per clone with:
+#   python scripts/prepublish.py --install-hook
+# To push once without the checks:  git push --no-verify
+for py in .venv/Scripts/python.exe .venv/bin/python python3 python py; do
+  if [ -x "$py" ] || command -v "$py" >/dev/null 2>&1; then
+    exec "$py" scripts/prepublish.py --hook
+  fi
+done
+echo "pre-push: Python was not found, so the checks could not run. Push anyway with: git push --no-verify" >&2
+exit 1

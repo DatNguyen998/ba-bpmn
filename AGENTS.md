@@ -12,6 +12,8 @@ pytest --cov=bpmn_mcp.spec --cov=bpmn_mcp.server
 python scripts/sync_plugins.py            # after editing skills/ or packaging.json
 python scripts/sync_plugins.py --check    # must pass before every commit
 python scripts/sync_plugins.py --release  # before publishing: fails while a "TBC" placeholder is left
+python scripts/prepublish.py --preview    # every check, plus the README as GitHub draws it; look at the page it names
+python scripts/prepublish.py --install-hook   # once per clone: Git then runs the checks before every push
 ```
 
 ## Rules that are not obvious
@@ -47,7 +49,7 @@ python scripts/sync_plugins.py --release  # before publishing: fails while a "TB
 
 ## Release
 
-1. Bump the version in `pyproject.toml` and both manifests. Run the sync script, the tests, and `--release`.
+1. Bump the version in `pyproject.toml` and both manifests. Run the sync script, then `python scripts/prepublish.py --preview` and look at the page it names.
 2. Commit, then tag that commit and push both: `git tag -a v0.1.0 -m "v0.1.0"`, `git push origin main v0.1.0`.
 3. The tag must exist on GitHub before anyone installs. Codex and Antigravity fetch the server at `…@v<version>`,
    and a test fails if that tag in their configs differs from the project version.

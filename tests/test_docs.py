@@ -139,6 +139,16 @@ def test_no_client_or_personal_terms_in_the_public_repository():
         assert not hit, f"{path.relative_to(ROOT)}: {hit.group(0)}"
 
 
+def test_no_large_or_sensitive_files_are_published():
+    sensitive = re.compile(r"(^|/)(\.env.*|.*\.(pem|key|p12|pfx|sqlite|db|log)|id_rsa.*|.*credentials.*|.*secrets?\..*)$", re.I)
+    for path in candidate_files():
+        if not path.is_file() or set(path.parts) & SKIP_DIRS:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        assert not sensitive.search(rel), f"{rel} looks sensitive"
+        assert path.stat().st_size <= 1_000_000, f"{rel} is over 1 MB"
+
+
 def test_no_secret_shaped_strings():
     secret = re.compile(r"ghp_[A-Za-z0-9]{20,}|github_pat_\w{20,}|sk-[A-Za-z0-9]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY")
     for path in text_files():
