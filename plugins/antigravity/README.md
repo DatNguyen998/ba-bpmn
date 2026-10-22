@@ -3,7 +3,10 @@
 Draw checked BPMN swimlane diagrams from a chat. You describe a process in plain words; the assistant asks only
 what is missing, shows a picture, and after you approve gives you an SVG, a PNG and a `.bpmn` file for Camunda.
 
-## Install (not yet tested in a real Antigravity)
+## Install
+
+> **Status:** these commands follow the Antigravity documentation and the draw.io plugin, but have not been run in a
+> real Antigravity yet.
 
 You need `uv` (a small helper that runs Python programs) and Chrome or Edge (for the PNG and the Camunda check).
 

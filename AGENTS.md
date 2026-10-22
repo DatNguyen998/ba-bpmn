@@ -30,8 +30,8 @@ python scripts/sync_plugins.py --release  # before publishing: fails while a "TB
 - **Keep `mcp` below version 2** until `server.py` is migrated (the server class was renamed).
 - **Host format limits.** The Codex plugin folder name must equal its manifest name (`ba-bpmn`). The Antigravity
   manifest allows only `name` and `description`. Every skill stays under 24,000 bytes.
-- **The engine here is not the original `bpmn-diagram` skill.** It has new elements and taller SVG task boxes. This
-  copy is the one that ships.
+- **This repository's engine is the one that ships.** Do not assume it matches any other drawing skill: it has its own
+  elements and taller SVG task boxes.
 - **Look at the picture.** Tests cannot see layout. After any engine change, build a diagram and open the PNG.
 
 ## If you change this, also do that
@@ -41,6 +41,7 @@ python scripts/sync_plugins.py --release  # before publishing: fails while a "TB
 | `skills/**` or `packaging.json` | Run the sync script and commit the generated files |
 | Version in `pyproject.toml` | Same version in `.claude-plugin/plugin.json` and the Codex `plugin.json` (a test checks), run the sync script (it re-pins the server to `v<version>`), then follow Release |
 | A BPMN element in the engine | The whitelist in `spec.py`, `spec_format.md`, "What is not supported" in `skills/bpmn-for-ba/SKILL.md`, the README list, and tests |
+| A diagram in the README | Edit `docs/diagrams/*.mmd`, then `cd docs/diagrams && npm ci && npm run render` and look at the pictures. A test fails on a stale one |
 | Something that cost real time to debug | Add a numbered entry to `docs/TRAPS.md` |
 | A claim that a host install works | Only after it ran in that host. Update the README evidence table |
 

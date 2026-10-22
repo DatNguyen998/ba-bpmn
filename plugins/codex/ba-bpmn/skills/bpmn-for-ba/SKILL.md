@@ -38,7 +38,7 @@ check error), `bpmn_build` (lay out, check, write files).
 `bpmn_build` saves the spec next to the outputs as `<name>.spec.json`, so the diagram can be rebuilt or changed
 later. To change an earlier diagram, read that file, edit it, and build again. Show the spec to the user on request.
 
-## Modelling rules (learned from real reviews)
+## Modelling rules
 
 - **Pools are parties, lanes are roles.** Anyone outside the organisation (customer, partner, regulator) gets their
   own pool; roles inside one organisation are lanes of its pool. Pools talk only through message flows. Sequence

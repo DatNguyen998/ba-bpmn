@@ -1,0 +1,12 @@
+{
+  "name": "ba-bpmn-diagrams",
+  "private": true,
+  "type": "module",
+  "description": "Renders the Mermaid diagrams in this folder to SVG with Pele. Development tool only.",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "pele": "1.8.0"
+  }
+}

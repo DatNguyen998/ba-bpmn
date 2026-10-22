@@ -1,0 +1,22 @@
+flowchart TB
+    subgraph Hosts["AI tools: one thin wrapper each"]
+        C["Claude<br/>.claude-plugin/"]
+        X["Codex<br/>plugins/codex/ba-bpmn/"]
+        A["Antigravity<br/>plugins/antigravity/"]
+    end
+    subgraph Shared["The same for every tool"]
+        S["Six skills<br/>copied byte for byte by<br/>scripts/sync_plugins.py"]
+        M["MCP server<br/>started with uvx<br/>src/bpmn_mcp/server.py<br/>three tools"]
+    end
+    P["spec.py<br/>turns the description into checked data<br/>and never runs it"]
+    E["Drawing engine<br/>layout, checks, SVG, .bpmn"]
+    B["Chrome or Edge, headless<br/>PNG and the Camunda import test"]
+    O["bpmn-output/<br/>.svg .png .bpmn .spec.json"]
+    C --> Shared
+    X --> Shared
+    A --> Shared
+    M --> P
+    P --> E
+    E --> B
+    E --> O
+    B --> O

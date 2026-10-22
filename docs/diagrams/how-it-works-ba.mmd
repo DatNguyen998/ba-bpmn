@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor BA as Business analyst
+    participant AI as AI tool<br/>(Claude, Codex or Antigravity)
+    participant Skill as Skills<br/>(the instructions)
+    participant MCP as MCP server<br/>(tool: bpmn_build)
+    participant Eng as Drawing engine
+    BA->>AI: Describe the process in plain words
+    AI->>Skill: Load the BA workflow and the modelling rules
+    Skill-->>AI: Ask only what is missing, at most five questions
+    AI->>BA: A few short questions
+    BA->>AI: Answers, or just draw it
+    AI->>MCP: bpmn_build with the diagram description, stage=svg
+    MCP->>Eng: Check the description is plain data, lay it out, run the checks
+    Eng-->>MCP: SVG plus any errors to fix
+    MCP-->>AI: Result
+    AI->>BA: Picture for review
+    BA->>AI: Add a legal review step
+    AI->>MCP: bpmn_build again with the updated description
+    BA->>AI: Looks right, export it
+    AI->>MCP: bpmn_build with stage=all
+    MCP->>Eng: Make the PNG and the .bpmn, then test the .bpmn in Camunda's viewer
+    Eng-->>MCP: Files and a pass or fail
+    MCP-->>AI: Files written to bpmn-output
+    AI->>BA: .svg and .png for documents, .bpmn for Camunda, .spec.json to change it later

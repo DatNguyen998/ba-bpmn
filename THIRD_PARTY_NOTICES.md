@@ -17,3 +17,11 @@ distribution and sublicensing, free of charge, on two conditions that apply here
    hide it. The SVG, PNG and `.bpmn` files the plugin produces do not contain the viewer.
 
 This summary is not legal advice. Read the full licence at the address above.
+
+## Pele (development tool only)
+
+- Project: Pele, https://github.com/obsidianmd/pele (npm package `pele`, version 1.8.0, pinned in
+  `docs/diagrams/package.json`)
+- Licence: MIT
+- Use: draws the diagrams in `docs/diagrams/` from Mermaid text. The pictures are generated markup. No Pele code is
+  included in the plugin or in the repository, and users never run it.
