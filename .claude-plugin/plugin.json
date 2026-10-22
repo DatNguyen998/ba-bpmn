@@ -1,0 +1,16 @@
+{
+  "name": "ba-bpmn",
+  "version": "0.1.0",
+  "description": "Draw checked BPMN diagrams from a chat: SVG, PNG and a Camunda-importable .bpmn file.",
+  "author": {"name": "Huy (Harvey) Tran"},
+  "license": "MIT",
+  "homepage": "https://github.com/huytquocxx/ba-bpmn",
+  "repository": "https://github.com/huytquocxx/ba-bpmn",
+  "keywords": ["bpmn", "camunda", "process", "swimlane"],
+  "mcpServers": {
+    "bpmn": {
+      "command": "uvx",
+      "args": ["--from", "${CLAUDE_PLUGIN_ROOT}", "bpmn-mcp"]
+    }
+  }
+}

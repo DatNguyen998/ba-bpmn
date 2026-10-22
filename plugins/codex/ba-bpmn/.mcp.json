@@ -1,0 +1,11 @@
+{
+  "bpmn": {
+    "command": "uvx",
+    "args": [
+      "--from",
+      "git+https://github.com/huytquocxx/ba-bpmn.git",
+      "bpmn-mcp"
+    ],
+    "default_tools_approval_mode": "writes"
+  }
+}

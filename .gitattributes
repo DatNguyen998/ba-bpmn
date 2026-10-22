@@ -1,0 +1,4 @@
+# Keep line endings the same on every computer, so the generated files always match the sync check.
+* text=auto eol=lf
+# The third-party viewer must stay byte-for-byte as shipped (its licence notice must stay intact).
+src/bpmn_mcp/engine/assets/*.js -text

@@ -1,0 +1,52 @@
+{
+  "title": "Leave request (example)",
+  "description": "Employee submits a leave request. The HR system checks the balance; if enough, the manager reviews (HR decides after 3 days without an answer). Approved leave is recorded by HR. The system sends the decision to the employee.",
+  "pools": [
+    {"id": "Pool_Employee", "title": "Employee",
+     "lanes": [{"name": "Employee", "sub": "staff member", "color": "customer", "h": 150}]},
+    {"id": "Pool_Company", "title": "Company: HR",
+     "lanes": [
+       {"name": "HR system", "sub": "leave portal"},
+       {"name": "Manager", "sub": "line manager", "color": "staff"},
+       {"name": "HR", "sub": "HR team", "color": "backoffice"}
+     ]}
+  ],
+  "elements": [
+    {"kind": "start", "id": "e_start", "pool": "Pool_Employee", "lane": 0, "col": 0.3, "name": "needs time off"},
+    {"kind": "task", "id": "e_submit", "pool": "Pool_Employee", "lane": 0, "col": 1, "name": "Submit request", "sub": "dates, reason"},
+    {"kind": "task", "id": "e_wait", "pool": "Pool_Employee", "lane": 0, "col": 7, "name": "Await decision", "sub": "email", "type": "receive"},
+    {"kind": "end", "id": "e_end", "pool": "Pool_Employee", "lane": 0, "col": 7.75, "name": "Answer received"},
+
+    {"kind": "start", "id": "c_recv", "pool": "Pool_Company", "lane": "HR system", "col": 1, "name": "request received", "message": true},
+    {"kind": "task", "id": "c_balance", "pool": "Pool_Company", "lane": "HR system", "col": 2, "name": "Check balance", "sub": "days left", "type": "service"},
+    {"kind": "gateway", "id": "c_enough", "pool": "Pool_Company", "lane": "HR system", "col": 3, "question": "Enough\nbalance?"},
+    {"kind": "task", "id": "c_review", "pool": "Pool_Company", "lane": "Manager", "col": 4, "name": "Review request", "sub": "calendar"},
+    {"kind": "timer", "id": "c_3days", "attached_to": "c_review", "name": "3 days, no answer", "duration": "P3D"},
+    {"kind": "task", "id": "c_hr_decide", "pool": "Pool_Company", "lane": "HR", "col": 5, "name": "Decide request", "sub": "for the manager"},
+    {"kind": "gateway", "id": "c_approve", "pool": "Pool_Company", "lane": "Manager", "col": 6, "question": "Approve?"},
+    {"kind": "task", "id": "c_record", "pool": "Pool_Company", "lane": "HR", "col": 7, "name": "Record leave", "sub": "update roster"},
+    {"kind": "task", "id": "c_send", "pool": "Pool_Company", "lane": "HR system", "col": 7, "name": "Send decision", "sub": "email", "type": "send"},
+    {"kind": "end", "id": "c_end", "pool": "Pool_Company", "lane": "HR system", "col": 7.75, "name": "Employee told"}
+  ],
+  "flows": [
+    {"from": "e_start", "to": "e_submit"},
+    {"from": "e_submit", "to": "e_wait"},
+    {"from": "e_wait", "to": "e_end"},
+    {"from": "c_recv", "to": "c_balance"},
+    {"from": "c_balance", "to": "c_enough"},
+    {"from": "c_enough", "to": "c_review", "label": "yes"},
+    {"from": "c_enough", "to": "c_send", "label": "no", "dashed": true},
+    {"from": "c_review", "to": "c_approve"},
+    {"from": "c_3days", "to": "c_hr_decide", "dashed": true},
+    {"from": "c_hr_decide", "to": "c_approve"},
+    {"from": "c_approve", "to": "c_record", "label": "yes", "exit": "r", "entry": "t"},
+    {"from": "c_approve", "to": "c_send", "label": "no", "exit": "t", "entry": "l"},
+    {"from": "c_record", "to": "c_send"},
+    {"from": "c_send", "to": "c_end"}
+  ],
+  "messages": [
+    {"from": "e_submit", "to": "c_recv", "label": "leave request"},
+    {"from": "c_send", "to": "e_wait", "label": "decision"}
+  ],
+  "legend_notes": ["Example only. Timer: if the manager has not answered within 3 days, HR decides."]
+}

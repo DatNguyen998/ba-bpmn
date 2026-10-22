@@ -1,0 +1,4 @@
+{
+  "name": "ba-bpmn",
+  "description": "Draw checked BPMN diagrams from a chat: SVG, PNG and a Camunda-importable .bpmn file."
+}

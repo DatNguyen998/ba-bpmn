@@ -1,0 +1,11 @@
+{
+  "name": "ba-bpmn",
+  "owner": {"name": "Huy (Harvey) Tran"},
+  "plugins": [
+    {
+      "name": "ba-bpmn",
+      "source": "./",
+      "description": "Draw checked BPMN diagrams from a chat: SVG, PNG and a Camunda-importable .bpmn file."
+    }
+  ]
+}

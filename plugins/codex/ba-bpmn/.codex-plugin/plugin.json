@@ -1,0 +1,35 @@
+{
+  "name": "ba-bpmn",
+  "version": "0.1.0",
+  "description": "Draw checked BPMN diagrams from a chat: SVG, PNG and a Camunda-importable .bpmn file.",
+  "author": {
+    "name": "Huy (Harvey) Tran"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/huytquocxx/ba-bpmn",
+  "repository": "https://github.com/huytquocxx/ba-bpmn",
+  "keywords": [
+    "bpmn",
+    "camunda",
+    "process",
+    "swimlane"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "BPMN for BAs",
+    "shortDescription": "Draw checked BPMN process diagrams from a chat.",
+    "longDescription": "Describe a business process in plain words. The assistant asks only what is missing, draws a checked swimlane diagram, and after you approve exports an SVG, a PNG and a .bpmn file that opens in Camunda.",
+    "developerName": "Huy (Harvey) Tran",
+    "category": "Productivity",
+    "capabilities": [
+      "Skills",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Draw the process for approving a leave request.",
+      "Check that my computer is ready to draw BPMN diagrams.",
+      "Change the diagram: add a manager approval step."
+    ]
+  }
+}

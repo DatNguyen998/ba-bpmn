@@ -1,0 +1,4 @@
+{
+  "server_source": "git+https://github.com/huytquocxx/ba-bpmn.git",
+  "server_command": "bpmn-mcp"
+}
