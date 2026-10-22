@@ -1,4 +1,4 @@
-# BA BPMN plugin (v0.1, work in progress)
+# BA BPMN plugin
 
 Draw checked BPMN diagrams from a chat. You describe a process in plain words; the assistant asks only what is
 missing, shows a picture, and after you approve gives you an SVG, a PNG and a `.bpmn` file that opens in Camunda.
