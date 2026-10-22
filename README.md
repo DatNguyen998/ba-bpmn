@@ -49,7 +49,8 @@ Three things make it safe to rely on:
 | `plugins/antigravity/` | Antigravity plugin |
 | `packaging.json` | The repository address. The sync script pins the server to the release tag of the current version (`@v0.1.0`) and writes it into both hosts |
 | `scripts/sync_plugins.py` | Copies `skills/` into the Codex and Antigravity folders and writes their server configs |
-| `.github/workflows/check.yml` | Runs the same checks and the tests on GitHub, on Linux and Windows, for every push and pull request |
+| `.github/workflows/`, `.github/dependabot.yml` | The checks and tests on GitHub (Linux and Windows), code scanning (CodeQL), the weekly OpenSSF Scorecard, and weekly dependency updates |
+| `SECURITY.md` | How to report a vulnerability privately, and what to expect |
 | `scripts/prepublish.py`, `.githooks/` | The checks to run before publishing (links, text rules, tests, leak scans, a preview of the README as GitHub draws it) and a Git hook that runs them before every push |
 | `AGENTS.md`, `CLAUDE.md` | Instructions for anyone (or any AI tool) changing this repository. `CLAUDE.md` only imports `AGENTS.md` |
 | `docs/diagrams/` | The two diagrams above as Mermaid text (`.mmd`) and the pictures drawn from them with Pele (`.svg`) |
@@ -89,7 +90,7 @@ installs a self-contained copy of its folder and Antigravity documents no folder
 | The engine draws, checks and exports (SVG, PNG, `.bpmn`) | Tested: 80+ automated tests, and every picture looked at |
 | The `.bpmn` loads in Camunda's own viewer (bpmn-js) | Tested: "imported, 0 warnings" |
 | The server starts through its `bpmn-mcp` command and works when an AI tool launches it | Tested on Windows with a Python client |
-| It runs on Linux and on Python 3.10 | Not tested yet. A GitHub workflow runs the checks there on every push; its first run is the first test |
+| It runs on Linux and on Python 3.10 | Tested on GitHub: Ubuntu and Windows, Python 3.10 and 3.13, the checks and 110 or 111 tests on each (the one Linux skip is a Windows-only test) |
 | The file opens in Camunda Modeler itself | Not tested |
 | Install and use in Claude | Not tested (manifests follow Anthropic's documentation) |
 | Install and use in Codex | Not tested (follows the draw.io plugin and the Codex checks of `sebahrens/bpmn-mcp`) |
@@ -108,6 +109,20 @@ loop and multi-instance markers.
 ## Privacy
 
 Files are written on your own computer, under the folder the assistant was started in. Nothing is uploaded.
+
+## Security
+
+To report a problem privately, see [SECURITY.md](SECURITY.md).
+
+What is checked, so you do not have to take it on trust:
+
+- **Every change** runs the same checks and the whole test suite on Linux and Windows (`.github/workflows/check.yml`).
+- **CodeQL**, GitHub's code scanner, reads the Python, JavaScript and workflow files on every change and every week.
+- **OpenSSF Scorecard** grades the repository's habits every week. The results are in the repository's Security tab and are
+  not published anywhere else.
+- **Dependabot** proposes dependency updates weekly. **Secret scanning** and push protection are on.
+- **GitHub Actions are pinned to full commit ids,** the workflows have read-only access, and the server the Codex and
+  Antigravity plugins start is pinned to the release tag of the version you install.
 
 ## Develop
 

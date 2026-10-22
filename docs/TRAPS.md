@@ -86,5 +86,5 @@ Each entry: the symptom as first seen, the real cause, and where the fix lives.
 - **Fix lives in:** `.github/workflows/check.yml` uses `matrix.os == 'ubuntu-latest'`. Test:
   `test_linux_browser_gets_the_flag_it_needs_only_on_linux` in `tests/test_ci.py`.
 - **Lesson:** lint a changed workflow with actionlint before pushing it. No Linux machine was available when this was
-  written, so the first GitHub run is the first real Linux test.
+  written, so the first GitHub run was the first real Linux test. It passed on all four combinations.
 - **Status:** Fixed.

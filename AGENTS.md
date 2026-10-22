@@ -47,6 +47,7 @@ python scripts/prepublish.py --install-hook   # once per clone: Git then runs th
 | A BPMN element in the engine | The whitelist in `spec.py`, `spec_format.md`, "What is not supported" in `skills/bpmn-for-ba/SKILL.md`, the README list, and tests |
 | A diagram in the README | Edit `docs/diagrams/*.mmd`, then `cd docs/diagrams && npm ci && npm run render` and look at the pictures. A test fails on a stale one |
 | A GitHub Action version in `.github/workflows/` | Look up the release's commit (`gh api repos/<owner>/<name>/git/ref/tags/<tag>`), put the full commit id and `# vX.Y.Z` in the file, and lint it with actionlint. A test requires every action to be pinned |
+| A Dependabot pull request arrives | Wait for the checks to go green, read what the update changes, then merge it on GitHub. Never merge a red one. Its action updates keep the full commit id and the version comment |
 | Something that cost real time to debug | Add a numbered entry to `docs/TRAPS.md` |
 | A claim that a host install works | Only after it ran in that host. Update the README evidence table |
 
