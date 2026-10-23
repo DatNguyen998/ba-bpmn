@@ -8,6 +8,10 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # The server needs mcp 1.x until server.py is migrated (docs/TRAPS.md, Trap 10).
+      - dependency-name: "mcp"
+        versions: [">=2"]
 
   - package-ecosystem: "npm"
     directory: "/docs/diagrams"

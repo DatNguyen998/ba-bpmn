@@ -88,3 +88,14 @@ Each entry: the symptom as first seen, the real cause, and where the fix lives.
 - **Lesson:** lint a changed workflow with actionlint before pushing it. No Linux machine was available when this was
   written, so the first GitHub run was the first real Linux test. It passed on all four combinations.
 - **Status:** Fixed.
+
+## Trap 10: Dependabot kept proposing the MCP library version that breaks the server
+
+- **Symptom:** the first Dependabot pull request changed `mcp>=1.2,<2` to `mcp>=1.2,<3`. All four test jobs went red.
+- **Cause:** Dependabot widens the range to reach the newest release, and version 2 renamed `FastMCP` (Trap 1). It would
+  propose the same change every week.
+- **Fix lives in:** the `ignore` rule for `mcp` in `.github/dependabot.yml`. Test:
+  `test_dependabot_does_not_propose_mcp_version_2_while_the_server_needs_version_1` in `tests/test_security_files.py`.
+- **Lesson:** the red checks did their job. Never merge a red Dependabot pull request. Remove the rule only together with
+  the `<2` pin, after `server.py` is migrated.
+- **Status:** Fixed. Pull request 1 is closed without merging.

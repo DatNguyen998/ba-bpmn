@@ -73,6 +73,13 @@ def test_dependabot_watches_python_node_and_the_actions_weekly():
     assert seen == {"pip": {"/"}, "npm": {"/docs/diagrams"}, "github-actions": {"/"}}, seen
 
 
+def test_dependabot_does_not_propose_mcp_version_2_while_the_server_needs_version_1():
+    body = read(ROOT / ".github" / "dependabot.yml")
+    pip_block = re.split(r"\n  - package-ecosystem:", "\n" + body)[1]
+    assert re.search(r'dependency-name:\s*"mcp"\s*\n\s+versions:\s*\[">=2"\]', pip_block), "see docs/TRAPS.md, Trap 10"
+    assert 'mcp>=1.2,<2' in read(ROOT / "pyproject.toml"), "lift the ignore rule only together with the pin"
+
+
 def test_security_policy_tells_people_how_to_report_privately():
     policy = read(ROOT / "SECURITY.md")
     assert ADVISORY_URL in policy
